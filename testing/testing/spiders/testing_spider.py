@@ -14,17 +14,19 @@ class TestSpider(scrapy.Spider):
 
     def parse(self, response):
         lines = response.css('table.proxytbl tr')
-        cypher_code = response.css('script::text')[5].get()                 # I had to use [5] because there are no distinguishing features of <script>
+        cypher_code = response.css('script::text')[5].get()
+        # I had to use [5] because there are no distinguishing features of <script>
+        decrypted_values_dict = self.get_decrypted_values_dict(cypher_code)
+        # convert arguments into a convenient format (dict)
         for line in lines[1:]:
             port_code_text = line.css('td.t_port script::text').get()
-            clean_port = self.clear_port_text(cypher_code, port_code_text)
+            clean_port = self.clear_port_text(decrypted_values_dict, port_code_text)
             yield {
                 'ip_address': line.css('td.t_ip::text').get(),
                 'port': clean_port
             }
 
-    def clear_port_text(self, cypher_code, port_code_text):
-        decrypted_values_dict = self.get_decrypted_values_dict(cypher_code)
+    def clear_port_text(self, decrypted_values_dict, port_code_text):
         old_port_code_arguments = port_code_text.split('(')[1].split(')')[0].split('^')
         new_port_code_arguments = []
 
