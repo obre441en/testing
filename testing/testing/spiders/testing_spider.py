@@ -1,6 +1,7 @@
 import scrapy
 from scrapy.crawler import CrawlerProcess
 from functools import reduce
+from collections import OrderedDict
 
 
 class TestSpider(scrapy.Spider):
@@ -38,7 +39,7 @@ class TestSpider(scrapy.Spider):
 
     def get_decrypted_values_dict(self, cypher_code):
         cypher_compare_values_list = cypher_code.replace('//<![CDATA[','').replace('//]]>','').strip().split(';')
-        cypher_values_dict = {}
+        cypher_values_dict = OrderedDict()
 
         for compare_value in cypher_compare_values_list[:-1]:
             value = compare_value.split('=')
@@ -70,6 +71,3 @@ process = CrawlerProcess(settings={
 })
 process.crawl(TestSpider)
 process.start()
-
-
-
