@@ -14,7 +14,7 @@ class TestSpider(scrapy.Spider):
 
     def parse(self, response):
         lines = response.css('table.proxytbl tr')
-        cypher_code = response.css('script::text')[5].get()
+        cypher_code = response.css('script::text')[5].get()                 # I had to use [5] because there are no distinguishing features of <script>
         for line in lines[1:]:
             port_code_text = line.css('td.t_port script::text').get()
             clean_port = self.clear_port_text(cypher_code, port_code_text)
@@ -38,7 +38,7 @@ class TestSpider(scrapy.Spider):
         return decrypted_port
 
     def get_decrypted_values_dict(self, cypher_code):
-        cypher_compare_values_list = cypher_code.replace('//<![CDATA[','').replace('//]]>','').strip().split(';')
+        cypher_compare_values_list = cypher_code.replace('//<![CDATA[', '').replace('//]]>', '').strip().split(';')
         cypher_values_dict = OrderedDict()
 
         for compare_value in cypher_compare_values_list[:-1]:
